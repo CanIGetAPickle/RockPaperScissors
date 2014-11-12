@@ -33,7 +33,7 @@ class Hand
 end
 
 class PlayerHand
-  attr_accessor :choice
+  attr_accessor :hand
   attr_reader :name
 
   def initialize(n)
