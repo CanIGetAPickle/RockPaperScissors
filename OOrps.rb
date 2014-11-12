@@ -17,6 +17,7 @@ class Hand
     else
       -1
     end
+  end
 
     def display_winning_message
       case @value
@@ -28,7 +29,7 @@ class Hand
         puts "Scissors cuts Paper!"
       end
     end
-  end
+  
 
 end
 
