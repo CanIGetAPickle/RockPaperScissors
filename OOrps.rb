@@ -1,95 +1,87 @@
-
-
-class Hand
-  include Comparable
-
-  attr_reader :value
-
-  def initialize(v)
-    @value = v
-  end
-
-  def <=>(another_hand)
-    if @value == another_hand.value
-      0
-    elsif (@value == 'p' && another_hand.value == 'r') || (@value == 'r' && another_hand.value == 's') || (@value == 's' && another_hand.value == 'p')
-      1
-    else
-      -1
-    end
-  end
-
-    def display_winning_message
-      case @value
-      when 'p'
-        puts "Paper covers Rock!"
-      when 'r'
-        puts "Rock damages Scissors!"
-      when 's'
-        puts "Scissors cuts Paper!"
-      end
-    end
-  
-
-end
-
-class PlayerHand
-  attr_accessor :hand
+class Player
+  attr_accessor :choice
   attr_reader :name
-
-  def initialize(n)
-    @name = n
-  end
-
-  def to_s
-    "#{name} currently has a choice of #{self.hand.value}!"
+  
+  def initialize(name)
+    @name = name
+    @choice = choice
   end
 end
 
-class Human < PlayerHand
-  def pick_hand
+class Human < Player
+  def choose_gesture
     begin
-      puts "Pick one: (R/P/S):"
-      c = gets.chomp.downcase
-    end until Game::CHOICES.keys.include?(c)
+      puts ">>> Enter a letter: [R]ock, [P]aper, [S]cissors"
+      player_choice = gets.chomp.upcase
 
-    self.hand = Hand.new(c)
+      if player_choice == "P"
+        self.choice = "Paper"
+      elsif player_choice == "R"
+        self.choice = "Rock"
+      elsif player_choice == "S"
+        self.choice = "Scissors"
+      else
+        puts ">>> Sorry, that's not an option!"
+      end 
+    end until player_choice == "P" || player_choice == "R" || player_choice == "S"
   end
 end
 
-class Computer < PlayerHand
-  def pick_hand
-    self.hand = Hand.new(Game::CHOICES.keys.sample)
+class Computer < Player  
+  def choose_gesture
+    computer_choice = Random.rand(1..3)
+    if computer_choice == 1
+      self.choice = "Paper"
+    elsif computer_choice == 2
+      self.choice = "Rock"
+    else
+      self.choice = "Scissors"
+    end
   end
 end
-
 
 class Game
-  CHOICES = {'p' => 'Paper', 'r' => 'Rock', 's' => 'Scissors'}
-
   attr_reader :player, :computer
-
+  
   def initialize
     @player = Human.new("You")
-    @computer = Computer.new("Computer")
+    @computer = Computer.new("The computer")
   end
-
-  def compare_hands
-    if player.hand == computer.hand
-      puts "It's a tie!"
-    elsif player.hand > computer.hand
-      player.hand.display_winning_message
-      puts "#{player.name} won!"
-    else
-      computer.hand.display_winning_message
-      puts "#{computer.name} won!"
+  
+  def display_winning_message(winning_choice)
+    case winning_choice
+    when "Paper"
+      puts ">>> Paper covers Rock!"
+    when "Rock"
+      puts ">>> Rock damages Scissors!"
+    when "Scissors"
+      puts ">>> Scissors cuts Paper!"
     end
   end
 
+  def compare_gestures
+    if player.choice == computer.choice
+      puts ">>> It's a tie!"
+    elsif (player.choice == "Paper" && computer.choice == "Rock") || (player.choice == "Rock" && computer.choice == "Scissors") || (player.choice == "Scissors" && computer.choice == "Paper")
+      display_winning_message(player.choice)
+      puts ">>> You won!"
+    else
+      display_winning_message(computer.choice)
+      puts ">>> Computer won!"
+    end
+  end
+  
   def play
-    player.pick_hand
-    computer.pick_hand
-    compare_hands
+    play_again = "Y"
+    begin
+      player.choose_gesture
+      puts "#{player.name} chose #{player.choice}."
+      computer.choose_gesture
+      puts "#{computer.name} chose #{computer.choice}."
+      compare_gestures
+      puts "::: Play again? (Y/N) :::"
+      play_again = gets.chomp.upcase
+    end until play_again != "Y"
   end
 end
 
