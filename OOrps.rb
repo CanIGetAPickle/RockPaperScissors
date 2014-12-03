@@ -72,7 +72,6 @@ class Game
   end
   
   def play
-    play_again = "Y"
     begin
       player.choose_gesture
       puts "#{player.name} chose #{player.choice}."
