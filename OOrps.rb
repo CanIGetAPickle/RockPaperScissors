@@ -4,7 +4,6 @@ class Player
   
   def initialize(name)
     @name = name
-    @choice = choice
   end
 end
 
@@ -29,14 +28,7 @@ end
 
 class Computer < Player  
   def choose_gesture
-    computer_choice = Random.rand(1..3)
-    if computer_choice == 1
-      self.choice = "Paper"
-    elsif computer_choice == 2
-      self.choice = "Rock"
-    else
-      self.choice = "Scissors"
-    end
+    self.choice = ["Rock", "Paper", "Scissors"].sample
   end
 end
 
@@ -74,9 +66,9 @@ class Game
   def play
     begin
       player.choose_gesture
-      puts "#{player.name} chose #{player.choice}."
+      puts ">>> #{player.name} chose #{player.choice}."
       computer.choose_gesture
-      puts "#{computer.name} chose #{computer.choice}."
+      puts ">>> #{computer.name} chose #{computer.choice}."
       compare_gestures
       puts "::: Play again? (Y/N) :::"
       play_again = gets.chomp.upcase
